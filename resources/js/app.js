@@ -7,6 +7,17 @@
 require('./bootstrap');
 
 window.Vue = require('vue').default;
+import Vuetify from 'vuetify'
+
+Vue.use(Vuetify)
+
+const opts = {
+    theme:{
+        dark:true
+    }
+}
+
+export default new Vuetify(opts)
 
 /**
  * The following block of code may be used to automatically register your
@@ -28,5 +39,6 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  */
 
 const app = new Vue({
+    vuetify: new Vuetify(),
     el: '#app',
 });

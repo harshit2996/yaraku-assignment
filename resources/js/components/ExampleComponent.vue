@@ -1,23 +1,17 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
+	<v-app>
+  <!-- Must have the app property -->
+		<v-app-bar app>
+			<v-app-bar-nav-icon></v-app-bar-nav-icon>
+			<v-toolbar-title>Yaraku</v-toolbar-title>
+		</v-app-bar>
 
-                    <div class="card-body">
-                        I'm an example component.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		<v-main>
+		</v-main>
+	</v-app>
 </template>
 
 <script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
-    }
+	export default {
+	}
 </script>
