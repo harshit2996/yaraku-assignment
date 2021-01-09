@@ -32,14 +32,14 @@ export default new Vuetify(opts)
 
 
 //Components
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 //Layouts
 Vue.component('main-layout', require('./layouts/MainLayout.vue').default);
 
 //Pages
 Vue.component('home', require('./pages/home.vue').default);
-Vue.component('add-books', require('./pages/addBook.vue').default);
+// Vue.component('add-books', require('./pages/addBook.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

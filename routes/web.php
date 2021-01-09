@@ -20,4 +20,3 @@ Route::get('/', function () {
 
 
 Route::resource('books', BookController::class);
-Route::get('/getBooks', [BookController::class, 'getBooks']);
