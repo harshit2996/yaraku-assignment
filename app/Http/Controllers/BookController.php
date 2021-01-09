@@ -77,8 +77,14 @@ class BookController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Book $book)
-    {
-        //
+    {   
+        if($book->title == $request->title && $book->author == $request->author){
+            return(["message"=>"No Change"]);
+        }
+        else{
+            $book->update($request->all());
+            return ["message"=>"updated"];
+        }
     }
 
     /**

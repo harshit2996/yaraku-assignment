@@ -32,11 +32,11 @@
                   <span class="headline">{{ formTitle }}</span>
                 </v-card-title>
 
-                <v-form @submit.prevent="save">
+                <v-form @submit.prevent="sendFormTo">
                   <v-card-text>
                     <v-container>
-                      <v-text-field v-model="title" outlined name="title" label="Book Title"></v-text-field>
-                      <v-text-field v-model="author" outlined name="author" label="Author"></v-text-field>
+                      <v-text-field v-model="editedItem.title" outlined name="title" label="Book Title"></v-text-field>
+                      <v-text-field v-model="editedItem.author" outlined name="author" label="Author"></v-text-field>
                     </v-container>
                   </v-card-text>
 
@@ -97,6 +97,23 @@
           </v-btn>
         </template>
       </v-data-table>
+      <v-snackbar
+        v-model="snackbar"
+        :multi-line="multiLine"
+      >
+        {{ text }}
+
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            :color="snackbarColor"
+            text
+            v-bind="attrs"
+            @click="snackbar = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-container>
   </main-layout>
 </template>
@@ -113,8 +130,6 @@ export default {
 
   data:()=>({
     books:[],
-    title:'',
-    author:'',
     headers: [
       { text: 'Title', value: 'title', sortable:true },
       { text: 'Author', value: 'author',sortable:true },
@@ -123,19 +138,23 @@ export default {
     dialog: false,
     dialogDelete: false,
     editedIndex: -1,
-      editedItem: {
-        title:'',
-        author:''
-      },
-      defaultItem: {
-        title:'',
-        author:''
-      },
+    editedItem: {
+      title:'',
+      author:''
+    },
+    defaultItem: {
+      title:'',
+      author:''
+    },
+    snackbar: false,
+    snackbarColor : "success",
+    text : "No Change Detected",
+    multiLine:true,
   }),
 
   computed: {
     formTitle () {
-      return this.editedIndex === -1 ? 'Add Book' : 'Edit'
+      return this.editedIndex === -1 ? 'Add Book' : 'Edit Book'
     },
   },
 
@@ -186,6 +205,37 @@ export default {
       this.dialog = true
     },
 
+    sendFormTo(){
+      if(this.formTitle==='Add Book')
+        this.add()
+      else if(this.formTitle==='Edit Book')
+        this.edit()
+    },
+
+    edit(){
+      let formData = new FormData;
+      formData.append('title',this.editedItem.title)
+      formData.append('author',this.editedItem.author)
+      axios.put('/books/'+ this.editedItem.id, {'title':this.editedItem.title, 'author':this.editedItem.author})
+      .then(res=>{
+        console.log(res.data)
+        this.text = res.data.message 
+        if(res.data.message==="No Change"){
+          this.snackbarColor="red"
+          this.snackbar=true
+        }
+      })
+      .catch(err=>{
+        console.log(err.response.data)
+      })
+      this.snackbarColor="success"
+      this.snackbar=true
+      this.initialize()
+
+      this.close()
+    },
+
+
     deleteItem (item) {
       this.editedIndex = this.books.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -218,10 +268,10 @@ export default {
       })
     },
 
-    save () {
+    add () {
       let formData = new FormData;
-      formData.append('title',this.title)
-      formData.append('author',this.author)
+      formData.append('title',this.editedItem.title)
+      formData.append('author',this.editedItem.author)
 
       console.log(formData)
 
@@ -233,8 +283,6 @@ export default {
         console.log(err.response.data)
       })
       this.initialize()
-      this.author='',
-      this.title='',
       this.close()
     },
   }
