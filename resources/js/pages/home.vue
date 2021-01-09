@@ -2,65 +2,93 @@
   <main-layout>
     <v-container fill-height justify-center class="flex-column">
       <v-col class="shrink">
-        <v-container justify-center>
-          <v-toolbar rounded>
-            <v-toolbar-title>Download Files</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn @click="d_title_w_author">Title with Author</v-btn>
-              <v-btn @click="d_title">Title</v-btn>
-              <v-btn @click="d_author">Author</v-btn>
-            </v-toolbar-items>
-          </v-toolbar>
-        </v-container>
+        <v-col class="d-flex shrink py-0 justify-space-between">
+          <v-btn v-if="$vuetify.theme.dark" color="yellow" @click="$vuetify.theme.dark=!$vuetify.theme.dark" icon><v-icon>mdi-white-balance-sunny</v-icon></v-btn>
+          <v-btn v-if="!$vuetify.theme.dark" color="blue" @click="$vuetify.theme.dark=!$vuetify.theme.dark" icon><v-icon>mdi-moon-waxing-crescent</v-icon></v-btn>
+          <v-menu 
+              offset-y
+              bottom
+              left
+            >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                dark
+                v-bind="attrs"
+                v-on="on"
+                class="text-capitalize"
+              >
+                <div>Download CSV Files</div>
+                <v-icon>mdi-menu-down</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item @click="handle_function_call(item.functionName)" v-for="(item,index) in downloads" :key="index">
+                <v-col class="pa-0">
+                  <div class="d-flex">
+                    <v-list-item-avatar><v-icon color="green">mdi-file-delimited-outline</v-icon></v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>{{item.name}}</v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-avatar><v-icon color="orange">mdi-download</v-icon></v-list-item-avatar>
+                  </div>
+                  <div v-if="item.divider" class="d-flex">
+                    <v-divider class="my-0"></v-divider>
+                  </div>
+                </v-col>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-col>
       </v-col>
       <v-col class="flex-1">
         <v-container fill-height justify-center>
           <v-data-table
-            class="grey darken-3 col-12 pa-0"
+            class="col-12 pa-0 elevation-2"
             :headers="headers"
             :items="books"
             sort-by="Title"
             :search="search"
           >
             <template v-slot:top>
-                <v-toolbar
-                  flat
-                  rounded
+              <v-toolbar
+                flat
+                rounded
+                color="green darken-1"
+              >
+                <v-toolbar-title>Books</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn
+                  dark
+                  @click="dialog=!dialog"
                 >
-                  <v-toolbar-title>Books</v-toolbar-title>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue-grey darken-3"
-                    dark
-                    @click="dialog=!dialog"
-                  >
-                    Add Book
-                  </v-btn>
-                      
-                </v-toolbar>
-                <v-container class="blue-grey darken-3">
-                  <v-text-field
-                    color="white"
-                    v-model="search"
-                    outlined
-                    dense
-                    append-icon="mdi-magnify"
-                    label="Search"
-                    hide-details
-                  ></v-text-field>             
-                </v-container>
+                  Add Book
+                </v-btn>
+                    
+              </v-toolbar>
+              <v-container>
+                <v-text-field
+                  gitv-model="search"
+                  outlined
+                  dense
+                  append-icon="mdi-magnify"
+                  label="Search"
+                  hide-details
+                ></v-text-field>             
+              </v-container>
             </template>
             <template v-slot:[`item.actions`]="{ item }">
               <v-icon
-                small
+                color="orange"
+              
                 class="mr-2"
                 @click="editItem(item)"
               >
                 mdi-pencil
               </v-icon>
               <v-icon
-                small
+                color="red"
+                
                 @click="deleteItem(item)"
               >
                 mdi-delete
@@ -99,7 +127,7 @@
     <v-dialog v-model="dialog"
       content-class="col-12 col-md-6 pa-0"                   
     >
-      <v-card color="blue-grey darken-4">
+      <v-card :color="$vuetify.theme.dark?'blue-grey darken-4':''">
         <v-card-title>
           <span class="headline">{{ formTitle }}</span>
         </v-card-title>
@@ -115,14 +143,14 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-              color="white darken-1"
+              
               text
               @click="close"
             >
               Cancel
             </v-btn>
             <v-btn
-              color="white darken-1"
+              
               text
               type="submit"
             >
@@ -181,6 +209,27 @@ export default {
     snackbarColor : "success",
     text : "No Change Detected",
     multiLine:true,
+
+    dark:true,
+
+    downloads:[
+      {
+        name:'Titles.csv',
+        functionName:'d_title',
+        divider:true
+      },
+      {
+        name:'Authors.csv',
+        functionName:'d_author',
+        divider:true
+      },
+      {
+        name:'Titles & Authors.csv',
+        functionName:'d_title_w_author',
+        divider:false
+      },
+    ]
+
   }),
 
   computed: {
@@ -203,7 +252,7 @@ export default {
   beforeCreate () {
     axios.get('/books')
     .then(res=>{
-      console.log(res.data)
+      // console.log(res.data)
       res.data.forEach(element => {
         this.books.push(element)        
       });      
@@ -228,6 +277,10 @@ export default {
         console.log(err.response)
       })
       console.log(this.books)
+    },
+
+    handle_function_call(function_name) {
+      this[function_name]()
     },
 
     editItem (item) {
@@ -268,7 +321,6 @@ export default {
 
       this.close()
     },
-
 
     deleteItem (item) {
       this.editedIndex = this.books.indexOf(item)
@@ -371,5 +423,10 @@ export default {
 </script>
 
 <style>
+.v-btn:focus {
+  outline:none;
+  box-shadow: none;
+  border: none;
+}
 
 </style>

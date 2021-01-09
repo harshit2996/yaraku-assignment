@@ -4,9 +4,11 @@
       app 
       clipped-left
       flat
+      color="green"
     >
       <v-app-bar-nav-icon @click="leftDrawer = !leftDrawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Yaraku</v-toolbar-title>
+      <v-spacer></v-spacer>
     </v-app-bar>
     <v-navigation-drawer
       v-model="leftDrawer"
