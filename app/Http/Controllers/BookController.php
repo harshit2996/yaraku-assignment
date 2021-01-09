@@ -88,7 +88,8 @@ class BookController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Book $book)
-    {
-        //
+    {   
+        Book::find($book->id)->delete();
+        return json_encode(["message"=>"Deleted Successfully"]);
     }
 }

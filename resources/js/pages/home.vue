@@ -32,50 +32,32 @@
                   <span class="headline">{{ formTitle }}</span>
                 </v-card-title>
 
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                        md="4"
-                      >
-                        <v-text-field
-                          v-model="editedItem.title"
-                          label="Title"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                        md="4"
-                      >
-                        <v-text-field
-                          v-model="editedItem.author"
-                          label="Author"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
+                <v-form @submit.prevent="save">
+                  <v-card-text>
+                    <v-container>
+                      <v-text-field v-model="title" outlined name="title" label="Book Title"></v-text-field>
+                      <v-text-field v-model="author" outlined name="author" label="Author"></v-text-field>
+                    </v-container>
+                  </v-card-text>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="close"
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="save"
-                  >
-                    Save
-                  </v-btn>
-                </v-card-actions>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="close"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      type="submit"
+                    >
+                      Save
+                    </v-btn>
+                  </v-card-actions>
+                </v-form>
               </v-card>
             </v-dialog>
             <v-dialog v-model="dialogDelete" max-width="500px">
@@ -131,6 +113,8 @@ export default {
 
   data:()=>({
     books:[],
+    title:'',
+    author:'',
     headers: [
       { text: 'Title', value: 'title', sortable:true },
       { text: 'Author', value: 'author',sortable:true },
@@ -182,6 +166,7 @@ export default {
 
   methods: {
     initialize () {
+      this.books=[]
       axios.get('/getBooks')
       .then(res=>{
         console.log(res.data)
@@ -192,51 +177,66 @@ export default {
       .catch(err=>{
         console.log(err.response)
       })
-      // this.books = books
       console.log(this.books)
     },
 
     editItem (item) {
-        this.editedIndex = this.books.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
+      this.editedIndex = this.books.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialog = true
+    },
 
-      deleteItem (item) {
-        this.editedIndex = this.books.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialogDelete = true
-      },
+    deleteItem (item) {
+      this.editedIndex = this.books.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialogDelete = true
+    },
 
-      deleteItemConfirm () {
-        this.books.splice(this.editedIndex, 1)
-        this.closeDelete()
-      },
+    deleteItemConfirm () {
+      // this.books.splice(this.editedIndex, 1)
+      axios.delete('/books/' + this.editedItem.id)
+      .then(res=>{
+        console.log(res.data)
+        this.initialize()
+      })
+      this.closeDelete()
+    },
 
-      close () {
-        this.dialog = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
+    close () {
+      this.dialog = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
+    },
 
-      closeDelete () {
-        this.dialogDelete = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
+    closeDelete () {
+      this.dialogDelete = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
+    },
 
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.books[this.editedIndex], this.editedItem)
-        } else {
-          this.books.push(this.editedItem)
-        }
-        this.close()
-      },
+    save () {
+      let formData = new FormData;
+      formData.append('title',this.title)
+      formData.append('author',this.author)
+
+      console.log(formData)
+
+      axios.post('/books', formData)
+      .then(res=>{
+        console.log(res.data)
+      })
+      .catch(err=>{
+        console.log(err.response.data)
+      })
+      this.initialize()
+      this.author='',
+      this.title='',
+      this.close()
+    },
   }
 
 }

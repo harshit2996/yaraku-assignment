@@ -39,7 +39,6 @@ Vue.component('main-layout', require('./layouts/MainLayout.vue').default);
 
 //Pages
 Vue.component('home', require('./pages/home.vue').default);
-Vue.component('books', require('./pages/books.vue').default);
 Vue.component('add-books', require('./pages/addBook.vue').default);
 
 /**
