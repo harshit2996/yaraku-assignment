@@ -1,65 +1,82 @@
 <template>
   <main-layout>
-    <v-container fill-height justify-center>
-      <v-data-table
-        class="grey darken-3"
-        :headers="headers"
-        :items="books"
-        sort-by="Title"
-        :search="search"
-      >
-        <template v-slot:top>
-            <v-toolbar
-              flat
-              rounded
-            >
-              <v-toolbar-title>Books</v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="blue-grey darken-3"
-                dark
-                @click="dialog=!dialog"
+    <v-container fill-height justify-center class="flex-column">
+      <v-col class="shrink">
+        <v-container justify-center>
+          <v-toolbar rounded>
+            <v-toolbar-title>Download Files</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn @click="d_title_w_author">Title with Author</v-btn>
+              <v-btn @click="d_title">Title</v-btn>
+              <v-btn @click="d_author">Author</v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+        </v-container>
+      </v-col>
+      <v-col class="flex-1">
+        <v-container fill-height justify-center>
+          <v-data-table
+            class="grey darken-3 col-12 pa-0"
+            :headers="headers"
+            :items="books"
+            sort-by="Title"
+            :search="search"
+          >
+            <template v-slot:top>
+                <v-toolbar
+                  flat
+                  rounded
+                >
+                  <v-toolbar-title>Books</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="blue-grey darken-3"
+                    dark
+                    @click="dialog=!dialog"
+                  >
+                    Add Book
+                  </v-btn>
+                      
+                </v-toolbar>
+                <v-container class="blue-grey darken-3">
+                  <v-text-field
+                    color="white"
+                    v-model="search"
+                    outlined
+                    dense
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    hide-details
+                  ></v-text-field>             
+                </v-container>
+            </template>
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(item)"
               >
-                Add Book
+                mdi-pencil
+              </v-icon>
+              <v-icon
+                small
+                @click="deleteItem(item)"
+              >
+                mdi-delete
+              </v-icon>
+            </template>
+            <template v-slot:no-data>
+              <v-btn
+                color="blue-grey darken-4"
+                @click="initialize"
+              >
+                Reset
               </v-btn>
-                  
-            </v-toolbar>
-            <v-container class="blue-grey darken-3">
-              <v-text-field
-                color="white"
-                v-model="search"
-                outlined
-                dense
-                append-icon="mdi-magnify"
-                label="Search"
-                hide-details
-              ></v-text-field>             
-            </v-container>
-        </template>
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-icon
-            small
-            class="mr-2"
-            @click="editItem(item)"
-          >
-            mdi-pencil
-          </v-icon>
-          <v-icon
-            small
-            @click="deleteItem(item)"
-          >
-            mdi-delete
-          </v-icon>
-        </template>
-        <template v-slot:no-data>
-          <v-btn
-            color="blue-grey darken-4"
-            @click="initialize"
-          >
-            Reset
-          </v-btn>
-        </template>
-      </v-data-table>
+            </template>
+          </v-data-table>
+        </v-container>
+      </v-col>
       <v-snackbar
         v-model="snackbar"
         :multi-line="multiLine"
@@ -79,53 +96,55 @@
         </template>
       </v-snackbar>
     </v-container>
-      <v-dialog v-model="dialog"
-        content-class="col-12 col-md-6 pa-0"                   
-      >
-        <v-card color="blue-grey darken-4">
-          <v-card-title>
-            <span class="headline">{{ formTitle }}</span>
-          </v-card-title>
+    <v-dialog v-model="dialog"
+      content-class="col-12 col-md-6 pa-0"                   
+    >
+      <v-card color="blue-grey darken-4">
+        <v-card-title>
+          <span class="headline">{{ formTitle }}</span>
+        </v-card-title>
 
-          <v-form @submit.prevent="sendFormTo">
-            <v-card-text>
-              <v-container>
-                <v-text-field v-model="editedItem.title" outlined name="title" label="Book Title"></v-text-field>
-                <v-text-field v-model="editedItem.author" outlined name="author" label="Author"></v-text-field>
-              </v-container>
-            </v-card-text>
+        <v-form @submit.prevent="sendFormTo">
+          <v-card-text>
+            <v-container>
+              <v-text-field v-model="editedItem.title" outlined name="title" label="Book Title"></v-text-field>
+              <v-text-field v-model="editedItem.author" outlined name="author" label="Author"></v-text-field>
+            </v-container>
+          </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="white darken-1"
-                text
-                @click="close"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                color="white darken-1"
-                text
-                type="submit"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-form>
-        </v-card>
-      </v-dialog>
-      <v-dialog content-class="col-12 col-md-6 pa-0" v-model="dialogDelete">
-        <v-card color="blue-grey darken-4">
-          <v-card-title class="headline">Are you sure you want to delete this item?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-            <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-            <v-spacer></v-spacer>
+            <v-btn
+              color="white darken-1"
+              text
+              @click="close"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              color="white darken-1"
+              text
+              type="submit"
+            >
+              Save
+            </v-btn>
           </v-card-actions>
-        </v-card>
-      </v-dialog>
+        </v-form>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialogDelete"
+      content-class="col-12 col-md-6 pa-0" 
+      >
+      <v-card color="blue-grey darken-4">
+        <v-card-title class="headline">Are you sure you want to delete this item?</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </main-layout>
 </template>
 
@@ -300,6 +319,52 @@ export default {
       this.initialize()
       this.close()
     },
+
+    downloadFunction(list, fileName){
+      var str = '';
+      for (var i = 0; i < list.length; i++) { 
+        let line = '';
+        line = list[i].join(",");
+        str += line + '\r\n';
+      }
+      var blob = new Blob([str], { type: 'text/csv;charset=utf-8;' });
+      var link = document.createElement('a');
+      var url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', fileName);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+
+    d_title_w_author(){
+      let list = [['Titles', 'Authors']]
+      this.books.forEach(book => {
+        list.push([book.title, book.author])
+      });    
+      
+      this.downloadFunction(list,'titles_w_author.csv')      
+    },
+
+    d_title(){
+      let list = [['Titles']]
+      this.books.forEach(book => {
+        list.push([book.title])
+      });    
+      
+      this.downloadFunction(list, 'title.csv') 
+    },
+
+    d_author(){
+      let list = [['Authors']]
+      this.books.forEach(book => {
+        list.push([book.author])
+      });    
+      
+      this.downloadFunction(list,'author.csv') 
+    }
+
   }
 
 }
