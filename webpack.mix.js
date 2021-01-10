@@ -14,5 +14,5 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
     .vue()
     .sass('resources/sass/app.scss', 'public/css');
-mix.sourceMaps() // to remove dev tools popper.js warning
-mix.browserSync('localhost:8000');
+// mix.sourceMaps() // to remove dev tools popper.js warning
+// mix.browserSync('localhost:8000');
