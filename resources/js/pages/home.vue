@@ -132,11 +132,13 @@
           <span class="headline">{{ formTitle }}</span>
         </v-card-title>
 
-        <v-form @submit.prevent="sendFormTo">
+        <v-form ref="book" @submit.prevent="sendFormTo">
           <v-card-text>
             <v-container>
-              <v-text-field v-model="editedItem.title" outlined name="title" label="Book Title"></v-text-field>
-              <v-text-field v-model="editedItem.author" outlined name="author" label="Author"></v-text-field>
+              <v-text-field v-model="editedItem.title" outlined name="title" label="Book Title" lazy-validation
+                    :rules="[ val => val && val.length > 0 || 'Please enter Book Title']"></v-text-field>
+              <v-text-field v-model="editedItem.author" outlined name="author" label="Author" lazy-validation
+                    :rules="[ val => val && val.length > 0 || 'Please enter Author\'s Name']"></v-text-field>
             </v-container>
           </v-card-text>
 
@@ -163,13 +165,12 @@
     <v-dialog v-model="dialogDelete"
       content-class="col-12 col-md-6 pa-0" 
       >
-      <v-card color="blue-grey darken-4">
-        <v-card-title class="headline">Are you sure you want to delete this item?</v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-          <v-spacer></v-spacer>
+      <v-card :color="$vuetify.theme.dark?'blue-grey darken-4':''">
+        <v-card-title class="headline justify-center">Are you sure you want to delete this item?</v-card-title>
+        <v-divider class="pa-0 ma-0"></v-divider>
+        <v-card-actions class="justify-center">
+          <v-btn text @click="closeDelete">Cancel</v-btn>
+          <v-btn text @click="deleteItemConfirm">OK</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -252,7 +253,6 @@ export default {
   beforeCreate () {
     axios.get('/books')
     .then(res=>{
-      // console.log(res.data)
       res.data.forEach(element => {
         this.books.push(element)        
       });      
@@ -275,7 +275,6 @@ export default {
       .catch(err=>{
         console.log(err.response)
       })
-      console.log(this.books)
     },
 
     handle_function_call(function_name) {
@@ -289,10 +288,12 @@ export default {
     },
 
     sendFormTo(){
-      if(this.formTitle==='Add Book')
-        this.add()
-      else if(this.formTitle==='Edit Book')
-        this.edit()
+      if(this.$refs.book.validate()){
+        if(this.formTitle==='Add Book')
+          this.add()
+        else if(this.formTitle==='Edit Book')
+          this.edit()
+      }
     },
 
     edit(){
