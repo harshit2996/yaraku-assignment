@@ -78,21 +78,34 @@
               </v-container>
             </template>
             <template v-slot:[`item.actions`]="{ item }">
-              <v-icon
-                color="orange"
-              
-                class="mr-2"
-                @click="editItem(item)"
-              >
-                mdi-pencil
-              </v-icon>
-              <v-icon
-                color="red"
-                
-                @click="deleteItem(item)"
-              >
-                mdi-delete
-              </v-icon>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    color="orange"
+                    v-on="on"
+                    v-bind="attrs"
+                    class="mr-2"
+                    @click="editItem(item)"
+                  >
+                    mdi-pencil
+                  </v-icon>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    color="red"
+                    v-on="on"
+                    v-bind="attrs"
+                    @click="deleteItem(item)"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </template>
+                <span>Delete Book</span>
+
+              </v-tooltip>
             </template>
             <template v-slot:no-data>
               <v-btn
@@ -267,7 +280,6 @@ export default {
       this.books=[]
       axios.get('/books')
       .then(res=>{
-        console.log(res.data)
         res.data.forEach(element => {
           this.books.push(element)        
         });      

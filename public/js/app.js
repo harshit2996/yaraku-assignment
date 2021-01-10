@@ -2091,6 +2091,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -2177,7 +2190,6 @@ __webpack_require__.r(__webpack_exports__);
 
       this.books = [];
       axios.get('/books').then(function (res) {
-        console.log(res.data);
         res.data.forEach(function (element) {
           _this2.books.push(element);
         });
@@ -38673,37 +38685,104 @@ var render = function() {
                             var item = ref.item
                             return [
                               _c(
-                                "v-icon",
+                                "v-tooltip",
                                 {
-                                  staticClass: "mr-2",
-                                  attrs: { color: "orange" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.editItem(item)
-                                    }
-                                  }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n              mdi-pencil\n            "
+                                  attrs: { bottom: "" },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "v-icon",
+                                              _vm._g(
+                                                _vm._b(
+                                                  {
+                                                    staticClass: "mr-2",
+                                                    attrs: { color: "orange" },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.editItem(
+                                                          item
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  "v-icon",
+                                                  attrs,
+                                                  false
+                                                ),
+                                                on
+                                              ),
+                                              [
+                                                _vm._v(
+                                                  "\n                  mdi-pencil\n                "
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    true
                                   )
-                                ]
+                                },
+                                [_vm._v(" "), _c("span", [_vm._v("Edit")])]
                               ),
                               _vm._v(" "),
                               _c(
-                                "v-icon",
+                                "v-tooltip",
                                 {
-                                  attrs: { color: "red" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.deleteItem(item)
-                                    }
-                                  }
+                                  attrs: { bottom: "" },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "v-icon",
+                                              _vm._g(
+                                                _vm._b(
+                                                  {
+                                                    attrs: { color: "red" },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.deleteItem(
+                                                          item
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  "v-icon",
+                                                  attrs,
+                                                  false
+                                                ),
+                                                on
+                                              ),
+                                              [
+                                                _vm._v(
+                                                  "\n                  mdi-delete\n                "
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    true
+                                  )
                                 },
                                 [
-                                  _vm._v(
-                                    "\n              mdi-delete\n            "
-                                  )
+                                  _vm._v(" "),
+                                  _c("span", [_vm._v("Delete Book")])
                                 ]
                               )
                             ]
