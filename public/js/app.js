@@ -38646,12 +38646,18 @@ var render = function() {
                                 [
                                   _c("v-text-field", {
                                     attrs: {
-                                      "gitv-model": "search",
                                       outlined: "",
                                       dense: "",
                                       "append-icon": "mdi-magnify",
                                       label: "Search",
                                       "hide-details": ""
+                                    },
+                                    model: {
+                                      value: _vm.search,
+                                      callback: function($$v) {
+                                        _vm.search = $$v
+                                      },
+                                      expression: "search"
                                     }
                                   })
                                 ],

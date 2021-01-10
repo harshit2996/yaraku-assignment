@@ -68,7 +68,7 @@
               </v-toolbar>
               <v-container>
                 <v-text-field
-                  gitv-model="search"
+                  v-model="search"
                   outlined
                   dense
                   append-icon="mdi-magnify"
