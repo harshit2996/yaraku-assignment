@@ -1,6 +1,6 @@
 # Book Titles and Authors CRUD Application
 
-## [Demo]('https://yaraku.herokuapp.com')
+## [Demo](https://yaraku.herokuapp.com)
 <img width="100%" contain src="https://github.com/harshit2996/yaraku-assignment/blob/master/Yaraku.gif">
 
 ## Functionalities
@@ -37,7 +37,7 @@
 10. Run ```php artisan serve``` to Start the Server 
 
 ### To Deploy the Application on Heroku
-Follow the Guide here - [Deployment Guide]('https://dev.to/eduvin/how-to-deploy-a-laravel-vue-app-to-heroku-4kmg')
+Follow the Guide here - [Deployment Guide](https://dev.to/eduvin/how-to-deploy-a-laravel-vue-app-to-heroku-4kmg)
 
 ## Tech Stack Used
 Here is the list of technologies used
